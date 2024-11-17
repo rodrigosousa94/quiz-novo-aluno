@@ -3,6 +3,8 @@ import { LiaSchoolSolid } from "react-icons/lia";
 import InputRadio from './Input';
 import { useState } from 'react';
 
+import { db, addDoc, collection } from "./assets/firebase/firebase.js"
+
 const perguntas = [
   {
     pergunta: 'O aluno sabe ler com fluência?',
@@ -75,8 +77,31 @@ function App() {
 
  }
 
- function handleClick(){
-  setSuccess(false)
+ async function handleClick(event){
+  
+event.preventDefault()
+
+  const data = {
+    nome,
+    p1: respostas.p1,
+    p2: respostas.p2,
+    p3: respostas.p3,
+    p4: respostas.p4,
+    p5: respostas.p5,
+    p6: respostas.p6,
+    timestamp: new Date().toISOString()
+  }
+
+  try {
+    await addDoc(collection(db, "respostas"), data)
+    console.log("dados enviados com sucesso")
+    setSuccess(false)
+  } catch(error) {
+    console.log("Erro ao enviar" + error)
+    alert("Algo deu errado :(")
+  }
+
+
  }
 
   return (
