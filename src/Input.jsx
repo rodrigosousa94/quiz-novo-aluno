@@ -1,12 +1,12 @@
 import { FieldContainer, LegendContainer, Label } from "./inputStyle"
 
-function InputRadio({ id, pergunta, options, onChange, value }){
+function InputRadio({ id, pergunta, options, onChange, value, required }){
     return(
         <FieldContainer>
             <LegendContainer>{pergunta}</LegendContainer>
             {options.map((option, index) => (
                 <Label key={index}> 
-                    <input required type="radio" checked={value === option} value={option} id={id} name={id} onChange={onChange} />
+                    <input required={required} type="radio" checked={value === option} value={option} id={id} name={id} onChange={onChange} />
                     {option}
                 </Label>
             ))}

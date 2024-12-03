@@ -95,6 +95,11 @@ function App() {
   }
  }
 
+ function handleBack(){
+  setCurrentQuestionIndex(currentQuestionIndex - 1)
+ }
+ 
+
  async function handleClick(event){
   
 event.preventDefault()
@@ -132,16 +137,21 @@ event.preventDefault()
            {!isNameEntered && (
              <label style={{color: '#2e2e2e', fontSize: 18, fontWeight: 'bold'}}>
                Nome do aluno:
-               <input style={{ width: '100%', height: '20px', padding: '4px', backgroundColor: '#fff7e6', borderRadius: '5px' }} type='text' required onChange={(event) => setNome(event.target.value)} />
+               <input style={{ width: '100%', height: '20px', padding: '4px', backgroundColor: '#fff7e6', borderRadius: '5px' }} type='text' required={true} onChange={(event) => setNome(event.target.value)} />
              </label>
+             
            )}
   
            {isNameEntered && perguntas[currentQuestionIndex] && (
-             <InputRadio key={perguntas[currentQuestionIndex].id} onChange={handleChange} value={respostas[perguntas[currentQuestionIndex].id]} {...perguntas[currentQuestionIndex]} />
+              <div>
+                <InputRadio required={true} key={perguntas[currentQuestionIndex].id} onChange={handleChange} value={respostas[perguntas[currentQuestionIndex].id]} {...perguntas[currentQuestionIndex]} />
+                <Button type='button' onClick={handleBack}>Voltar</Button>
+              </div>
            )}
   
            {currentQuestionIndex < perguntas.length - 1 ? (
-             <Button type='button' onClick={handleNext}>Próximo</Button>
+               <Button type='button' onClick={handleNext}>Próximo</Button>       
+
            ) : (
              <Button type='submit'>Enviar</Button>
            )}
