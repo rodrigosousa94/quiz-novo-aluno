@@ -70,11 +70,29 @@ function App() {
  })
 
  const [nome, setNome] = useState("")
- const [success, setSuccess] = useState(true)
+ const [success, setSuccess] = useState(false)
+ const [inputCount, setInputCount] = useState(1)
+ const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+ const [isNameEntered, setIsNameEntered] = useState(false)
 
  function handleChange( {target} ){
   setRespostas({...respostas, [target.id]: target.value})
 
+ }
+
+ function handleNext(){
+  if(isNameEntered){
+    if(currentQuestionIndex < perguntas.length - 1){
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
+    }
+  }else{
+    if(nome.trim() !== ""){
+      setIsNameEntered(true)
+      setCurrentQuestionIndex(0)
+    }else{
+      alert("Por favor, insira o nome do aluno!")
+    }
+  }
  }
 
  async function handleClick(event){
@@ -95,7 +113,7 @@ event.preventDefault()
   try {
     await addDoc(collection(db, "respostas"), data)
     console.log("dados enviados com sucesso")
-    setSuccess(false)
+    setSuccess(true)
   } catch(error) {
     console.log("Erro ao enviar" + error)
     alert("Algo deu errado :(")
@@ -106,23 +124,36 @@ event.preventDefault()
 
   return (
    <Container>
-     <h1>Explicadora Tia Thais <LiaSchoolSolid /></h1>
-    {success ? (
-          <form onSubmit={handleClick}>
-          <label style={ {fontWeight: 'bold', color: '#801BEC', padding: 30} }>
-            Nome do aluno:
-            <input required onChange={(event) => setNome(event.target.value)} style={{ marginBottom: 20, padding: 2, width: '50%' , borderRadius: 5, border: '1px solid rgba(128, 27, 236, 0.22)' }} type="text"/>
-          </label>
-          {perguntas.map((pergunta) => (
-            <InputRadio key={pergunta.id} value={respostas[pergunta.id]} onChange={handleChange} {...pergunta}/>
-          ))}
-    
-          <Button>Enviar</Button>
-        </form>
-    ) : <h2 style={{ textAlign: 'center' }}>Dados enviados com sucesso</h2>
+     <h1>Explicadora Tia Thais <LiaSchoolSolid/></h1>
+   
+       {success ? (<h2 style={{ textAlign: 'center' }}>Dados enviados com sucesso</h2>) : (
+           <form onSubmit={handleClick}>
+
+           {!isNameEntered && (
+             <label style={{color: '#2e2e2e', fontSize: 18, fontWeight: 'bold'}}>
+               Nome do aluno:
+               <input style={{ width: '100%', height: '20px', padding: '4px', backgroundColor: '#fff7e6', borderRadius: '5px' }} type='text' required onChange={(event) => setNome(event.target.value)} />
+             </label>
+           )}
+  
+           {isNameEntered && perguntas[currentQuestionIndex] && (
+             <InputRadio key={perguntas[currentQuestionIndex].id} onChange={handleChange} value={respostas[perguntas[currentQuestionIndex].id]} {...perguntas[currentQuestionIndex]} />
+           )}
+  
+           {currentQuestionIndex < perguntas.length - 1 ? (
+             <Button type='button' onClick={handleNext}>Próximo</Button>
+           ) : (
+             <Button type='submit'>Enviar</Button>
+           )}
+           
   
   
-  }
+  
+         </form>
+       )}
+        
+   
+  
    </Container>
   )
 }
